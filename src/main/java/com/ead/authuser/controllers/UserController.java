@@ -6,11 +6,13 @@ import com.ead.authuser.dtos.UserDTO.UserView.PasswordPut;
 import com.ead.authuser.dtos.UserDTO.UserView.UserPut;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
+import com.ead.authuser.specifications.SpecificationTemplate;
+import com.ead.authuser.specifications.SpecificationTemplate.UserSpec;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.Collection;
 import java.util.UUID;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
 @RequestMapping("users")
@@ -46,8 +48,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserModel>> findAll(final Pageable pageable) {
-        final var users = service.findAll(pageable);
+    public ResponseEntity<Page<UserModel>> findAll(
+            @PageableDefault(sort = "createdDate", direction = DESC) final Pageable pageable,
+            final UserSpec spec
+    ) {
+        final var users = service.findAll(pageable, spec);
         return ResponseEntity.ok(users);
     }
 
