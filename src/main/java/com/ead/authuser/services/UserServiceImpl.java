@@ -8,11 +8,16 @@ import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.UUID;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,8 +40,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<UserModel> findAll() {
-        return repository.findAll();
+    public Page<UserModel> findAll(@PageableDefault(sort = "createdDate", direction = DESC) final Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override

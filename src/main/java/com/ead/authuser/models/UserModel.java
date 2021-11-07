@@ -37,7 +37,7 @@ public final class UserModel extends Auditable {
     @Column(nullable = false, unique = true, length = 14)
     private final String cpf;
 
-    @Column(nullable = false, length = 90)
+    @Column(nullable = false, length = 20)
     @JsonIgnore
     @Setter
     private String password;

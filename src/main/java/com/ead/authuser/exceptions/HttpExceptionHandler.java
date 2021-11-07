@@ -50,7 +50,8 @@ public final class HttpExceptionHandler {
         final Set<ExceptionJsonMessage> violations = new HashSet<>();
 
         for(final var error : e.getBindingResult().getFieldErrors()) {
-            violations.add(new ExceptionJsonMessage(BAD_REQUEST.value(), error.getDefaultMessage()));
+            final String payloadMessage = error.getField() + " " + error.getDefaultMessage();
+            violations.add(new ExceptionJsonMessage(BAD_REQUEST.value(), payloadMessage));
         }
 
         return new ResponseEntity<>(Collections.singleton(violations), BAD_REQUEST);

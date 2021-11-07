@@ -2,13 +2,15 @@ package com.ead.authuser.services;
 
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.models.UserModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
 import java.util.UUID;
 
 public interface UserService {
 
-    Collection<UserModel> findAll();
+    Page<UserModel> findAll(final Pageable pageable);
 
     UserModel findById(final UUID id);
 

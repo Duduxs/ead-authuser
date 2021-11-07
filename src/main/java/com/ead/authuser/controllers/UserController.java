@@ -8,7 +8,11 @@ import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,15 +46,15 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<UserModel>> findAll() {
-        final var users = service.findAll();
+    public ResponseEntity<Page<UserModel>> findAll(final Pageable pageable) {
+        final var users = service.findAll(pageable);
         return ResponseEntity.ok(users);
     }
 
     @PutMapping( "{id}")
     public ResponseEntity<UserDTO> update(
             @PathVariable final UUID id,
-            @Valid @RequestBody @JsonView(UserPut.class) final UserDTO dto
+            @RequestBody @Validated(UserDTO.UserView.UserPut.class) @JsonView(UserPut.class) final UserDTO dto
     ) {
         var entityUpdated = service.update(id, dto);
         return ResponseEntity.ok(entityUpdated);
@@ -59,7 +63,7 @@ public class UserController {
     @PatchMapping( "{id}/password")
     public ResponseEntity<Void> updatePassword(
             @PathVariable final UUID id,
-            @Valid @RequestBody @JsonView(PasswordPut.class) final UserDTO dto
+            @RequestBody @Validated(PasswordPut.class) @JsonView(PasswordPut.class) final UserDTO dto
     ) {
         service.updatePassword(id, dto);
         return ResponseEntity.accepted().build();
@@ -68,7 +72,7 @@ public class UserController {
     @PatchMapping( "{id}/image")
     public ResponseEntity<UserDTO> updateImage(
             @PathVariable final UUID id,
-            @Valid @RequestBody @JsonView(ImagePut.class) final UserDTO dto
+            @RequestBody @Validated(ImagePut.class) @JsonView(ImagePut.class) final UserDTO dto
     ) {
         var entityUpdated = service.updateImage(id, dto);
         return ResponseEntity.ok(entityUpdated);
