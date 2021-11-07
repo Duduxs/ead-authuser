@@ -26,7 +26,7 @@ import static javax.persistence.EnumType.STRING;
 @EqualsAndHashCode(of = {"cpf"}, callSuper = false)
 @JsonInclude(NON_NULL)
 @Getter
-public final class UserModel extends Auditable {
+public final class UserModel extends Auditable<UserModel> {
 
     @Column(nullable = false, unique = true, length = 50)
     private final String username;

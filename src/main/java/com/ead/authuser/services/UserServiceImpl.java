@@ -1,5 +1,6 @@
 package com.ead.authuser.services;
 
+import com.ead.authuser.controllers.UserController;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
@@ -14,7 +15,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.UUID;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
 
     @Autowired
-    public UserServiceImpl(final UserRepository repository, final UserMapper mapper){
+    public UserServiceImpl(final UserRepository repository, final UserMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
@@ -38,7 +43,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Page<UserModel> findAll(final Pageable pageable, final Specification<UserModel> spec) {
-        return repository.findAll(spec, pageable);
+        var users = repository.findAll(spec, pageable);
+
+        if (!users.isEmpty()) {
+            users.forEach(u -> u.add(linkTo(methodOn(UserController.class).findById(u.getId())).withSelfRel()));
+        }
+
+        return users;
     }
 
     @Override
@@ -62,7 +73,7 @@ public class UserServiceImpl implements UserService {
     public void updatePassword(final UUID id, final UserDTO dto) {
         var domain = findById(id);
 
-        if(!domain.getPassword().equals(dto.oldPassword())) {
+        if (!domain.getPassword().equals(dto.oldPassword())) {
             throw new BadRequestHttpException("Passwords do not match!");
         }
 
