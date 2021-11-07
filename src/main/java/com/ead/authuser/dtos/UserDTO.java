@@ -1,6 +1,5 @@
 package com.ead.authuser.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.UUID;
