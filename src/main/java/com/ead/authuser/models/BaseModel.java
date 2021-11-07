@@ -1,4 +1,4 @@
-package com.ead.authuser.entities;
+package com.ead.authuser.models;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import static lombok.AccessLevel.PACKAGE;
 @NoArgsConstructor(force = true, access = PACKAGE)
 @MappedSuperclass
 @Getter
-public abstract class BaseEntity {
+public abstract class BaseModel {
 
     @Id
     @GeneratedValue(strategy = AUTO)

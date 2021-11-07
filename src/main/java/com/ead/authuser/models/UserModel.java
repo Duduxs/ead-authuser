@@ -3,8 +3,10 @@ package com.ead.authuser.models;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -13,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
+import static com.ead.authuser.enums.UserStatus.ACTIVE;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static javax.persistence.EnumType.STRING;
 
 @Entity
@@ -20,7 +24,9 @@ import static javax.persistence.EnumType.STRING;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"cpf"}, callSuper = false)
-public final class User extends Auditable {
+@JsonInclude(NON_NULL)
+@Getter
+public final class UserModel extends Auditable {
 
     @Column(nullable = false, unique = true, length = 50)
     private final String username;
@@ -43,7 +49,7 @@ public final class User extends Auditable {
     @Column(nullable = false)
     @Enumerated(STRING)
     @Setter
-    private UserStatus status;
+    private UserStatus status = ACTIVE;
 
     @Column(nullable = false)
     @Enumerated(STRING)

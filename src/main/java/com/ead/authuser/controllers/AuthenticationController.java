@@ -10,39 +10,38 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.Collection;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class UserController {
+public class AuthenticationController {
 
     private final UserService service;
 
     @Autowired
-    public UserController(final UserService service) {
+    public AuthenticationController(final UserService service) {
         this.service = service;
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<UserModel> findById(@PathVariable final UUID id) {
-        final var user = service.findById(id);
-        return ResponseEntity.ok(user);
-    }
+    @PostMapping("signup")
+    public ResponseEntity<UserDTO> save(@RequestBody @Valid final UserDTO dto) {
+        final URI uri = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(dto.id())
+            .toUri();
 
-    @GetMapping
-    public ResponseEntity<Collection<UserModel>> findAll() {
-        final var users = service.findAll();
-        return ResponseEntity.ok(users);
-    }
+        final var insertedEntity = service.save(dto);
 
-    @DeleteMapping( "{id}")
-    public ResponseEntity<Void> delete(@PathVariable final UUID id) {
-        service.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(uri).body(insertedEntity);
     }
 }

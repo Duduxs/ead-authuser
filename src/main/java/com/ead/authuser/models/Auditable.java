@@ -1,4 +1,4 @@
-package com.ead.authuser.entities;
+package com.ead.authuser.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-public abstract class Auditable extends BaseEntity {
+public abstract class Auditable extends BaseModel {
 
     @CreatedDate
     @JsonFormat(shape = STRING, pattern = "dd-MM-yyyy HH:mm:ss")
