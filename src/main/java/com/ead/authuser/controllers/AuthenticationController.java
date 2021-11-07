@@ -2,6 +2,7 @@ package com.ead.authuser.controllers;
 
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.services.UserService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +14,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+
+import static com.ead.authuser.dtos.UserDTO.UserView.RegistrationPost;
 
 @RestController
 @RequestMapping("auth")
@@ -27,7 +30,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<UserDTO> save(@RequestBody @Valid final UserDTO dto) {
+    public ResponseEntity<UserDTO> insert(
+            @RequestBody
+            @Valid
+            @JsonView(RegistrationPost.class)
+            final UserDTO dto
+    ) {
         final URI uri = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .path("/{id}")

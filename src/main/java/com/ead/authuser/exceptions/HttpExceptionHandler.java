@@ -28,6 +28,12 @@ public final class HttpExceptionHandler {
         return new ResponseEntity<>(message, NOT_FOUND);
     }
 
+    @ExceptionHandler(BadRequestHttpException.class)
+    public ResponseEntity<Object> handleBadRequestHttpException(final Exception e) {
+        final var message = new ExceptionJsonMessage(BAD_REQUEST.value(), e.getMessage());
+        return new ResponseEntity<>(message, BAD_REQUEST);
+    }
+
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Object> handleSQLException(final SQLException e) {
         var status = UNPROCESSABLE_ENTITY;

@@ -1,6 +1,7 @@
 package com.ead.authuser.services;
 
 import com.ead.authuser.dtos.UserDTO;
+import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
 import com.ead.authuser.mappers.UserMapper;
 import com.ead.authuser.models.UserModel;
@@ -48,6 +49,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public UserDTO update(final UUID id, final UserDTO dto) {
+        var domain = findById(id);
+        repository.save(mapper.update(domain, dto));
+        return mapper.toDTOWithoutPassword(domain);
+    }
+
+    @Override
+    @Transactional
+    public void updatePassword(final UUID id, final UserDTO dto) {
+        var domain = findById(id);
+
+        if(!domain.getPassword().equals(dto.oldPassword())) {
+            throw new BadRequestHttpException("Passwords do not match!");
+        }
+
+        repository.save(mapper.updatePassword(domain, dto));
+    }
+
+    @Override
+    @Transactional
+    public UserDTO updateImage(final UUID id, final UserDTO dto) {
+        var domain = findById(id);
+
+        repository.save(mapper.updateImage(domain, dto));
+        return mapper.toDTOWithoutPassword(domain);
+    }
+
+    @Override
+    @Transactional
     public void deleteById(final UUID id) {
         try {
             repository.deleteById(id);
@@ -55,8 +85,4 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundHttpException("This resource can't be founded to delete.");
         }
     }
-
-
-
-
 }

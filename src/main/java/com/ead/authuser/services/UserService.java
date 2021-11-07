@@ -15,4 +15,10 @@ public interface UserService {
     void deleteById(final UUID id);
 
     UserDTO save(final UserDTO dto);
+
+    UserDTO update(final UUID id, final UserDTO dto);
+
+    void updatePassword(final UUID id, final UserDTO dto);
+
+    UserDTO updateImage(final UUID id, final UserDTO dto);
 }
