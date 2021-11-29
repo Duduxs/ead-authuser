@@ -1,8 +1,7 @@
 package com.ead.authuser.services;
 
+import com.ead.authuser.core.factory.UserFactory;
 import com.ead.authuser.dtos.UserDTO;
-import com.ead.authuser.enums.UserStatus;
-import com.ead.authuser.enums.UserType;
 import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
 import com.ead.authuser.mappers.UserMapper;
@@ -48,6 +47,8 @@ public class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl service;
+    
+    private final UserFactory factory = new UserFactory();
 
     @BeforeEach
     void clearMocks() {
@@ -60,7 +61,7 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("FindById should return an entity when id exists")
         public void findByIdShouldReturn() {
-            final var user = new UserModel();
+            final var user = factory.createEmptyUser();
 
             doReturn(Optional.of(user)).when(repository).findById(any());
 
@@ -105,8 +106,8 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("Save should insert entity when passing a dto")
         public void save() {
-            final var user = new UserModel();
-            final var dto = createDTO(user);
+            final var user = factory.createEmptyUser();
+            final var dto = factory.createDTO(user);
 
             doReturn(user).when(mapper).toDomain(any());
             doReturn(user).when(repository).save(any());
@@ -126,8 +127,8 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("Update should update entity when passing a id and dto")
         public void updateShouldUpdate() {
-            final var user = new UserModel();
-            final var dto = createDTO(user);
+            final var user = factory.createEmptyUser();
+            final var dto = factory.createDTO(user);
 
             doReturn(Optional.of(user)).when(repository).findById(any());
             doReturn(user).when(repository).save(any());
@@ -145,8 +146,8 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("Update should throw an exception when passing a id that doesn't exists")
         public void updateShouldThrowException() {
-            final var user = new UserModel();
-            final var dto = createDTO(user);
+            final var user = factory.createEmptyUser();
+            final var dto = factory.createDTO(user);
 
             doThrow(NotFoundHttpException.class).when(repository).findById(any());
 
@@ -161,8 +162,8 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("UpdatePassword should update password of the entity when passing a id and dto")
         public void updatePasswordShouldUpdate() {
-            final var user = createUser();
-            final var dto = createDTO(user);
+            final var user = factory.createUser();
+            final var dto = factory.createDTO(user);
 
             doReturn(Optional.of(user)).when(repository).findById(any());
             doReturn(user).when(repository).save(any());
@@ -178,7 +179,7 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("UpdatePassword should throw an exception when passing dto and entity password aren't the same")
         public void updatePasswordShouldThrowException() {
-            final var user = createUser();
+            final var user = factory.createUser();
             final var dto = createDTOWithDifferentPassword(user);
 
             doReturn(Optional.of(user)).when(repository).findById(any());
@@ -193,7 +194,7 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("UpdatePassword should throw a not found exception when passing dto a id that doesn't exists")
         public void updatePasswordShouldThrowNotFoundException() {
-            final var user = createUser();
+            final var user = factory.createUser();
             final var dto = createDTOWithDifferentPassword(user);
 
             doThrow(NotFoundHttpException.class).when(repository).findById(any());
@@ -208,8 +209,8 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("UpdateImage should update image of the entity when passing a id and dto")
         public void updateImageShouldUpdate() {
-            final var user = new UserModel();
-            final var dto = createDTO(user);
+            final var user = factory.createEmptyUser();
+            final var dto = factory.createDTO(user);
 
             doReturn(Optional.of(user)).when(repository).findById(any());
             doReturn(user).when(repository).save(any());
@@ -227,8 +228,8 @@ public class UserServiceImplTest {
         @Test
         @DisplayName("UpdateImage should throw an exception when passing a id that doesn't exists")
         public void updateImageShouldThrowException() {
-            final var user = new UserModel();
-            final var dto = createDTO(user);
+            final var user = factory.createEmptyUser();
+            final var dto = factory.createDTO(user);
 
             doThrow(NotFoundHttpException.class).when(repository).findById(any());
 
@@ -265,35 +266,7 @@ public class UserServiceImplTest {
         }
 
     }
-
-    private UserModel createUser() {
-        return new UserModel(
-                "myUsername",
-                "myEmail",
-                "11270099400",
-                "myPassword",
-                "myFullName",
-                UserStatus.BLOCKED,
-                UserType.STUDENT,
-                "myPhone",
-                "myImgUrl"
-        );
-    }
-
-    private UserDTO createDTO(final UserModel user) {
-        return new UserDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getPassword(),
-                user.getFullName(),
-                user.getPhone(),
-                user.getCpf(),
-                user.getImgUrl()
-        );
-    }
-
+    
     private UserDTO createDTOWithDifferentPassword(final UserModel user) {
         return new UserDTO(
                 user.getId(),
