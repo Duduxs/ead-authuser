@@ -15,8 +15,6 @@ public interface UserMapper {
 
     UserModel toDomain(final UserDTO userDTO);
 
-    UserDTO toDTO(final UserModel userModel);
-
     @Mapping(target = "password", ignore = true)
     UserDTO toDTOWithoutPassword(final UserModel userModel);
 

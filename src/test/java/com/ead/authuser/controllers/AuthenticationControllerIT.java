@@ -1,7 +1,6 @@
 package com.ead.authuser.controllers;
 
 import com.ead.authuser.core.factory.UserFactory;
-import com.ead.authuser.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,9 +25,6 @@ public class AuthenticationControllerIT {
 
     @Autowired
     private MockMvc mvc;
-
-    @Autowired
-    private UserRepository repository;
 
     @Autowired
     private ObjectMapper mapper;
@@ -50,6 +48,7 @@ public class AuthenticationControllerIT {
                         .contentType(APPLICATION_JSON)
         )
                 .andExpect(status().isCreated())
+                .andExpect(header().exists(LOCATION))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.username").value(user.username()))
                 .andExpect(jsonPath("$.email").value(user.email()))

@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Page<UserModel> findAll(final Pageable pageable, final Specification<UserModel> spec) {
-        var users = repository.findAll(spec, pageable);
+        final var users = repository.findAll(spec, pageable);
 
         if (!users.isEmpty()) {
             users.forEach(u -> u.add(linkTo(methodOn(UserController.class).findById(u.getId())).withSelfRel()));
@@ -62,15 +62,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO update(final UUID id, final UserDTO dto) {
-        var domain = findById(id);
-        repository.save(mapper.update(domain, dto));
-        return mapper.toDTOWithoutPassword(domain);
+        final var domain = findById(id);
+        final var domainUpdated = repository.save(mapper.update(domain, dto));
+        return mapper.toDTOWithoutPassword(domainUpdated);
     }
 
     @Override
     @Transactional
     public void updatePassword(final UUID id, final UserDTO dto) {
-        var domain = findById(id);
+        final var domain = findById(id);
 
         if (!domain.getPassword().equals(dto.oldPassword())) {
             throw new BadRequestHttpException("Passwords do not match!");
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO updateImage(final UUID id, final UserDTO dto) {
-        var domain = findById(id);
+        final var domain = findById(id);
 
         repository.save(mapper.updateImage(domain, dto));
         return mapper.toDTOWithoutPassword(domain);

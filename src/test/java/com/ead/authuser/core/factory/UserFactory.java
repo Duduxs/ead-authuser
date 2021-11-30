@@ -23,6 +23,20 @@ public class UserFactory {
         );
     }
 
+    public UserModel createAnotherUser() {
+        return new UserModel(
+                "Raphael",
+                "raphaelGon@gmail.com",
+                "30420180400",
+                "raphael3",
+                "Raphael R",
+                UserStatus.ACTIVE,
+                UserType.INSTRUCTOR,
+                "81912348333",
+                "https://www.freeimages.com/image/11123313"
+        );
+    }
+
     public UserDTO createDTO(final UserModel user) {
         return new UserDTO(
                 user.getId(),
