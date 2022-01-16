@@ -20,11 +20,11 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 public abstract class Auditable<T extends RepresentationModel<? extends T>> extends BaseModel<T> {
 
     @CreatedDate
-    @JsonFormat(shape = STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Setter
     private LocalDateTime createdDate = LocalDateTime.now();
 
     @LastModifiedDate
-    @JsonFormat(shape = STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime lastModifiedDate;
 }
