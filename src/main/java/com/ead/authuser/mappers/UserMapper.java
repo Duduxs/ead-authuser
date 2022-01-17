@@ -7,6 +7,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ObjectFactory;
 
+import java.util.Set;
+
 import static com.ead.authuser.enums.UserStatus.ACTIVE;
 import static com.ead.authuser.enums.UserType.STUDENT;
 
@@ -44,7 +46,8 @@ public interface UserMapper {
                 ACTIVE,
                 STUDENT,
                 dto.phone(),
-                dto.imgUrl()
+                dto.imgUrl(),
+                Set.of()
         );
     }
 }

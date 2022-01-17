@@ -5,6 +5,8 @@ import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.UserModel;
 
+import java.util.Set;
+
 public class UserFactory {
 
     public UserModel createEmptyUser() { return new UserModel(); }
@@ -19,7 +21,8 @@ public class UserFactory {
                 UserStatus.BLOCKED,
                 UserType.STUDENT,
                 "81912348213",
-                "https://www.freeimages.com/image/12901331"
+                "https://www.freeimages.com/image/12901331",
+                Set.of()
         );
     }
 
@@ -33,7 +36,8 @@ public class UserFactory {
                 UserStatus.ACTIVE,
                 UserType.INSTRUCTOR,
                 "81912348333",
-                "https://www.freeimages.com/image/11123313"
+                "https://www.freeimages.com/image/11123313",
+                Set.of()
         );
     }
 

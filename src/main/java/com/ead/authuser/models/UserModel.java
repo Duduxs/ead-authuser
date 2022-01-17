@@ -4,6 +4,7 @@ import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,10 +14,14 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import java.util.Set;
 
 import static com.ead.authuser.enums.UserStatus.ACTIVE;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 import static javax.persistence.EnumType.STRING;
 
 @Entity
@@ -62,4 +67,8 @@ public final class UserModel extends Auditable<UserModel> {
 
     @Setter
     private String imgUrl;
+
+    @JsonProperty(access = WRITE_ONLY)
+    @OneToMany(mappedBy = "user")
+    private final Set<UserCourseModel> userCourses;
 }
