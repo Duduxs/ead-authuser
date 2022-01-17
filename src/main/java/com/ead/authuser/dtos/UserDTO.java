@@ -59,9 +59,24 @@ public record UserDTO(
         String imgUrl
 ) {
     public interface UserView {
-        interface RegistrationPost { }
-        interface UserPut { }
-        interface PasswordPut { }
-        interface ImagePut { }
+        interface RegistrationPost {
+        }
+
+        interface UserPut {
+        }
+
+        interface PasswordPut {
+        }
+
+        interface ImagePut {
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "UserDTO[id=%s, username=%s, email=%s, fullName=%s, phone=%s, cpf=%s, imgUrl=%s]",
+                id, username, email, fullName, phone, cpf, imgUrl
+        );
     }
 }

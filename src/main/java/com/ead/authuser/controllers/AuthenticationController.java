@@ -3,6 +3,8 @@ package com.ead.authuser.controllers;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +26,8 @@ public class AuthenticationController {
 
     private final UserService service;
 
+    private final Logger logger = LogManager.getLogger(this.getClass());
+
     @Autowired
     public AuthenticationController(final UserService service) {
         this.service = service;
@@ -36,6 +40,9 @@ public class AuthenticationController {
             @JsonView(RegistrationPost.class)
             final UserDTO dto
     ) {
+
+        logger.debug("[POST] INIT - insert() - DTO {}", dto.toString());
+
         final URI uri = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .path("/{id}")
@@ -43,6 +50,9 @@ public class AuthenticationController {
             .toUri();
 
         final var insertedEntity = service.save(dto);
+
+        logger.debug("[POST] FINISH - insert() - DTO SAVED {}", insertedEntity.toString());
+        logger.info("[POST] FINISH - insert() - User saved successfully userID {}", insertedEntity.id());
 
         return ResponseEntity.created(uri).body(insertedEntity);
     }

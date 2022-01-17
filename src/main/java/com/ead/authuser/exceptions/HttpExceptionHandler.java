@@ -1,5 +1,6 @@
 package com.ead.authuser.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -61,6 +63,7 @@ public final class HttpExceptionHandler {
             Integer status,
             @JsonProperty("message") String payload,
             @CreatedDate
+            @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
             LocalDateTime timestamp
     ) {
         public ExceptionJsonMessage(final Integer status, final String payload) {
