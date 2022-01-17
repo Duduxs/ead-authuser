@@ -1,4 +1,4 @@
-package com.ead.authuser.services;
+package com.ead.authuser.services.impl;
 
 import com.ead.authuser.controllers.UserController;
 import com.ead.authuser.dtos.UserDTO;
@@ -7,6 +7,7 @@ import com.ead.authuser.exceptions.NotFoundHttpException;
 import com.ead.authuser.mappers.UserMapper;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
+import com.ead.authuser.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
