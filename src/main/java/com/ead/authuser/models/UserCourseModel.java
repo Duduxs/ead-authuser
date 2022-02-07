@@ -9,13 +9,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.UUID;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
-@Table(name = "user_course")
+@Table(
+        name = "user_course",
+        uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "courseId" })
+)
 @NoArgsConstructor(force = true)
 @Getter
 public final class UserCourseModel {
