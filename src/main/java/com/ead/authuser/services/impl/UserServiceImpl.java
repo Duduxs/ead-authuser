@@ -8,7 +8,7 @@ import com.ead.authuser.mappers.UserMapper;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ead.authuser.specifications.SpecificationTemplate;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,12 +41,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UserModel> findAll(final Pageable pageable, final Specification<UserModel> spec) {
-        final var users = repository.findAll(spec, pageable);
+    public Page<UserModel> findAll(
+            final Pageable pageable,
+            final Specification<UserModel> spec,
+            final UUID courseId
+    ) {
 
-        if (!users.isEmpty()) {
-            users.forEach(u -> u.add(linkTo(methodOn(UserController.class).findById(u.getId())).withSelfRel()));
+        Page<UserModel> users;
+
+        if (courseId != null) {
+            users = repository.findAll(SpecificationTemplate.userCourseId(courseId).and(spec), pageable);
+        } else {
+            users = repository.findAll(spec, pageable);
         }
+
+        users.forEach(u -> u.add(linkTo(methodOn(UserController.class).findById(u.getId())).withSelfRel()));
 
         return users;
     }

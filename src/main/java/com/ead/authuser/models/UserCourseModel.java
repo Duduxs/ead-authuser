@@ -18,7 +18,7 @@ import static javax.persistence.GenerationType.AUTO;
 @Entity
 @Table(
         name = "user_course",
-        uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "courseId" })
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "courseId"})
 )
 @NoArgsConstructor(force = true)
 @Getter

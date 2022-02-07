@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -60,12 +61,13 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<UserModel>> findAll(
             @PageableDefault(sort = "createdDate", direction = DESC) final Pageable pageable,
-            final UserSpec spec
+            final UserSpec spec,
+            @RequestParam(required = false) final UUID courseId
     ) {
 
         logger.debug("[GET] INIT - findAll()");
 
-        final var users = service.findAll(pageable, spec);
+        final var users = service.findAll(pageable, spec, courseId);
 
         logger.debug("[GET] FINISH - findAll()");
         logger.info("[GET] FINISH - findAll()");
@@ -73,7 +75,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PutMapping( "{id}")
+    @PutMapping("{id}")
     public ResponseEntity<UserDTO> update(
             @PathVariable final UUID id,
             @RequestBody @Validated(UserDTO.UserView.UserPut.class) @JsonView(UserPut.class) final UserDTO dto
