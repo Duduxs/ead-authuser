@@ -2,6 +2,7 @@ package com.ead.authuser.clients;
 
 import com.ead.authuser.dtos.CourseDTO;
 import com.ead.authuser.dtos.ResponsePageDTO;
+import com.ead.authuser.services.UtilsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
@@ -22,23 +23,20 @@ import static org.springframework.http.HttpMethod.GET;
 @Component
 public class UserClient {
 
-    private final String REQUEST_URI = "http://localhost:8082";
-
     private final RestTemplate template;
 
-    public UserClient(final RestTemplate template) {
+    private final UtilsService utilsService;
+
+    public UserClient(final RestTemplate template, UtilsService utilsService) {
         this.template = template;
+        this.utilsService = utilsService;
     }
 
     public Page<CourseDTO> findAllBy(final UUID userId, final Pageable pageable) {
 
         List<CourseDTO> courseDTO = Collections.emptyList();
 
-        final String url = REQUEST_URI
-                + "/courses?userId=" + userId
-                + "&page=" + pageable.getPageNumber()
-                + "&size=" + pageable.getPageSize()
-                + "&sort=" + pageable.getSort().toString().replaceAll(": ", ",");
+        final String url = utilsService.createURL(userId, pageable);
 
         log.debug("[GET] INFO - URL: {}", url);
         log.info("[GET] INFO - URL: {}", url);
