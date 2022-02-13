@@ -15,6 +15,8 @@ import static com.ead.authuser.enums.UserType.STUDENT;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "status", ignore = true)
     UserModel toDomain(final UserDTO userDTO);
 
     @Mapping(target = "password", ignore = true)

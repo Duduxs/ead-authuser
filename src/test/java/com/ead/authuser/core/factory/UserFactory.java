@@ -51,7 +51,9 @@ public class UserFactory {
                 user.getFullName(),
                 user.getPhone(),
                 user.getCpf(),
-                user.getImgUrl()
+                user.getImgUrl(),
+                user.getType(),
+                user.getStatus()
         );
     }
 }

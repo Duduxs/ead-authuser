@@ -1,7 +1,8 @@
 package com.ead.authuser.dtos;
 
+import com.ead.authuser.enums.UserStatus;
+import com.ead.authuser.enums.UserType;
 import com.ead.authuser.validations.UsernameConstraint;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
@@ -11,9 +12,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.UUID;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-@JsonInclude(NON_NULL)
 public record UserDTO(
         UUID id,
 
@@ -56,7 +55,13 @@ public record UserDTO(
         @NotEmpty(groups = UserView.ImagePut.class)
         @URL(groups = UserView.ImagePut.class)
         @JsonView(UserView.ImagePut.class)
-        String imgUrl
+        String imgUrl,
+
+        @JsonView(UserView.UserPut.class)
+        UserType type,
+
+        @JsonView(UserView.UserPut.class)
+        UserStatus status
 ) {
     public interface UserView {
         interface RegistrationPost {
@@ -75,8 +80,8 @@ public record UserDTO(
     @Override
     public String toString() {
         return String.format(
-                "UserDTO[id=%s, username=%s, email=%s, fullName=%s, phone=%s, cpf=%s, imgUrl=%s]",
-                id, username, email, fullName, phone, cpf, imgUrl
+                "UserDTO[id=%s, username=%s, email=%s, fullName=%s, phone=%s, cpf=%s, imgUrl=%s, type=%s, status=%s]",
+                id, username, email, fullName, phone, cpf, imgUrl, type, status
         );
     }
 }
