@@ -36,6 +36,12 @@ public final class HttpExceptionHandler {
         return new ResponseEntity<>(message, BAD_REQUEST);
     }
 
+    @ExceptionHandler(ConflictHttpException.class)
+    public ResponseEntity<Object> handleConflictHttpException(final Exception e) {
+        final var message = new ExceptionJsonMessage(CONFLICT.value(), e.getMessage());
+        return new ResponseEntity<>(message, CONFLICT);
+    }
+
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Object> handleSQLException(final SQLException e) {
         var status = UNPROCESSABLE_ENTITY;

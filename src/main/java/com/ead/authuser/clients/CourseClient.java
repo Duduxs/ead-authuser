@@ -21,13 +21,13 @@ import static org.springframework.http.HttpMethod.GET;
 
 @Log4j2
 @Component
-public class UserClient {
+public class CourseClient {
 
     private final RestTemplate template;
 
     private final UtilsService utilsService;
 
-    public UserClient(final RestTemplate template, UtilsService utilsService) {
+    public CourseClient(final RestTemplate template, UtilsService utilsService) {
         this.template = template;
         this.utilsService = utilsService;
     }
@@ -36,7 +36,7 @@ public class UserClient {
 
         List<CourseDTO> courseDTO = Collections.emptyList();
 
-        final String url = utilsService.createURL(userId, pageable);
+        final String url = utilsService.createUrlGetAllCoursesByUser(userId, pageable);
 
         log.debug("[GET] INFO - URL: {}", url);
         log.info("[GET] INFO - URL: {}", url);

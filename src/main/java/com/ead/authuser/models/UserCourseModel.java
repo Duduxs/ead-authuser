@@ -1,5 +1,6 @@
 package com.ead.authuser.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ import static javax.persistence.GenerationType.AUTO;
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "courseId"})
 )
 @NoArgsConstructor(force = true)
+@AllArgsConstructor
 @Getter
 public final class UserCourseModel {
 
