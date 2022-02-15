@@ -7,10 +7,10 @@ import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
 import com.ead.authuser.mappers.UserMapper;
 import com.ead.authuser.models.UserModel;
+import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import com.ead.authuser.specifications.SpecificationTemplate;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,10 +28,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
 
+    private final UserCourseRepository userCourseRepository;
+
     private final UserMapper mapper;
 
-    public UserServiceImpl(final UserRepository repository, final UserMapper mapper) {
+    public UserServiceImpl(
+            final UserRepository repository,
+            final UserCourseRepository userCourseRepository,
+            final UserMapper mapper
+    ) {
         this.repository = repository;
+        this.userCourseRepository = userCourseRepository;
         this.mapper = mapper;
     }
 
@@ -126,13 +133,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void deleteById(final UUID id) {
+    public void delete(final UUID userId) {
 
-        try {
-            repository.deleteById(id);
-        } catch (final EmptyResultDataAccessException exception) {
-            throw new NotFoundHttpException("This resource can't be founded to delete.");
+        final var entity = findById(userId);
+
+        final var userCourseList = userCourseRepository.findAllBy(userId);
+
+        if(!userCourseList.isEmpty()) {
+            userCourseRepository.deleteAll(userCourseList);
         }
+
+        repository.delete(entity);
+        
     }
 }

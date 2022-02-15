@@ -15,8 +15,6 @@ public interface UserService {
 
     UserModel findById(final UUID id);
 
-    void deleteById(final UUID id);
-
     UserDTO save(final UserDTO dto);
 
     UserDTO update(final UUID id, final UserDTO dto);
@@ -26,4 +24,6 @@ public interface UserService {
     void updatePassword(final UUID id, final UserDTO dto);
 
     UserDTO updateImage(final UUID id, final UserDTO dto);
+
+    void delete(final UUID userId);
 }

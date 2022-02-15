@@ -123,12 +123,12 @@ public class UserController {
         return ResponseEntity.ok(entityUpdated);
     }
 
-    @DeleteMapping( "{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable final UUID id) {
 
         logger.debug("[DELETE] INIT - delete() - ID {}", id);
 
-        service.deleteById(id);
+        service.delete(id);
 
         logger.debug("[DELETE] FINISH - delete() - Entity deleted successfully");
         logger.info("[DELETE] FINISH - delete() - User deleted successfully userID {}", id);
