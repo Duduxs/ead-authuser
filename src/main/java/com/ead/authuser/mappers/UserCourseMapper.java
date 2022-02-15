@@ -17,6 +17,6 @@ public interface UserCourseMapper {
 
     @ObjectFactory
     default UserCourseModel create(final UserModel user, final UUID courseId) {
-        return new UserCourseModel(null, user, courseId);
+        return new UserCourseModel(null, courseId, user);
     }
 }

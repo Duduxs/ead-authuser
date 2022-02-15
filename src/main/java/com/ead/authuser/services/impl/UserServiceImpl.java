@@ -1,6 +1,7 @@
 package com.ead.authuser.services.impl;
 
 import com.ead.authuser.controllers.UserController;
+import com.ead.authuser.dtos.InstructorDTO;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.ead.authuser.enums.UserType.INSTRUCTOR;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -63,22 +65,44 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO save(final UserDTO dto) {
+
         final var domain = mapper.toDomain(dto);
+
         repository.save(domain);
+
         return mapper.toDTOWithoutPassword(domain);
+
     }
 
     @Override
     @Transactional
     public UserDTO update(final UUID id, final UserDTO dto) {
+
         final var domain = findById(id);
+
         final var domainUpdated = repository.save(mapper.update(domain, dto));
+
         return mapper.toDTOWithoutPassword(domainUpdated);
+
+    }
+
+    @Override
+    @Transactional
+    public UserDTO updateToInstructor(final InstructorDTO dto) {
+
+        final var domain = findById(dto.getUserId());
+        domain.setType(INSTRUCTOR);
+
+        final var domainUpdated = repository.save(domain);
+
+        return mapper.toDTOWithoutPassword(domainUpdated);
+
     }
 
     @Override
     @Transactional
     public void updatePassword(final UUID id, final UserDTO dto) {
+
         final var domain = findById(id);
 
         if (!domain.getPassword().equals(dto.oldPassword())) {
@@ -86,20 +110,25 @@ public class UserServiceImpl implements UserService {
         }
 
         repository.save(mapper.updatePassword(domain, dto));
+
     }
 
     @Override
     @Transactional
     public UserDTO updateImage(final UUID id, final UserDTO dto) {
+
         final var domain = findById(id);
 
         repository.save(mapper.updateImage(domain, dto));
+
         return mapper.toDTOWithoutPassword(domain);
+
     }
 
     @Override
     @Transactional
     public void deleteById(final UUID id) {
+
         try {
             repository.deleteById(id);
         } catch (final EmptyResultDataAccessException exception) {

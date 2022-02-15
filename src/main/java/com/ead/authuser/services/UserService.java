@@ -1,5 +1,6 @@
 package com.ead.authuser.services;
 
+import com.ead.authuser.dtos.InstructorDTO;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.models.UserModel;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,8 @@ public interface UserService {
     UserDTO save(final UserDTO dto);
 
     UserDTO update(final UUID id, final UserDTO dto);
+
+    UserDTO updateToInstructor(final InstructorDTO dto);
 
     void updatePassword(final UUID id, final UserDTO dto);
 

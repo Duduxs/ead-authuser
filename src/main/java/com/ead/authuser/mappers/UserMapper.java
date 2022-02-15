@@ -24,16 +24,22 @@ public interface UserMapper {
 
     @Mapping(target = "imgUrl", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "status", ignore = true)
     UserModel update(@MappingTarget final UserModel userModel, final UserDTO dto);
 
     @Mapping(target = "imgUrl", ignore = true)
     @Mapping(target = "fullName", ignore = true)
     @Mapping(target = "phone", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "status", ignore = true)
     UserModel updatePassword(@MappingTarget final UserModel userModel, final UserDTO dto);
 
     @Mapping(target = "fullName", ignore = true)
     @Mapping(target = "phone", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "status", ignore = true)
     UserModel updateImage(@MappingTarget final UserModel userModel, final UserDTO dto);
 
 
