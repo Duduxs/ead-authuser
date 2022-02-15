@@ -31,9 +31,10 @@ public final class UserCourseModel {
     @Column(nullable = false)
     private final UUID id;
 
+    @Column(nullable = false)
+    private final UUID courseId;
+
     @ManyToOne(fetch = LAZY, optional = false)
     private final UserModel user;
 
-    @Column(nullable = false)
-    private final UUID courseId;
 }
