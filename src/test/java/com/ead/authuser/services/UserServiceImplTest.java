@@ -247,21 +247,21 @@ public class UserServiceImplTest {
     class DELETE {
 
         @Test
-        @DisplayName("DeleteById should remove entity when passing a valid id")
-        public void deleteByIdShouldRemove() {
+        @DisplayName("Delete should remove entity when passing a valid id")
+        public void deleteShouldRemove() {
             doNothing().when(repository).deleteById(any());
 
-            assertDoesNotThrow(() -> service.deleteById(UUID.randomUUID()));
+            assertDoesNotThrow(() -> service.delete(UUID.randomUUID()));
 
             verify(repository).deleteById(any());
         }
 
         @Test
-        @DisplayName("DeleteById should throw an exception when passing an invalid id")
-        public void deleteByIdShouldThrow() {
+        @DisplayName("Delete should throw an exception when passing an invalid id")
+        public void deleteShouldThrow() {
             doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(any());
 
-            assertThrows(NotFoundHttpException.class, () -> service.deleteById(UUID.randomUUID()));
+            assertThrows(NotFoundHttpException.class, () -> service.delete(UUID.randomUUID()));
 
             verify(repository).deleteById(any());
         }

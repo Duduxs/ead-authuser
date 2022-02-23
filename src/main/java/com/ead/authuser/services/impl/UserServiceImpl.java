@@ -144,6 +144,6 @@ public class UserServiceImpl implements UserService {
         }
 
         repository.delete(entity);
-        
+
     }
 }
