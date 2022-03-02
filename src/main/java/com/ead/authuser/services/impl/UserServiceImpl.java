@@ -1,5 +1,6 @@
 package com.ead.authuser.services.impl;
 
+import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.controllers.UserController;
 import com.ead.authuser.dtos.InstructorDTO;
 import com.ead.authuser.dtos.UserDTO;
@@ -30,15 +31,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserCourseRepository userCourseRepository;
 
+    private final CourseClient client;
+
     private final UserMapper mapper;
 
     public UserServiceImpl(
             final UserRepository repository,
             final UserCourseRepository userCourseRepository,
+            final CourseClient client,
             final UserMapper mapper
     ) {
         this.repository = repository;
         this.userCourseRepository = userCourseRepository;
+        this.client = client;
         this.mapper = mapper;
     }
 
@@ -133,7 +138,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void delete(final UUID userId) {
+
+        boolean isDeleteIntegrationNeeded = false;
 
         final var entity = findById(userId);
 
@@ -141,9 +149,14 @@ public class UserServiceImpl implements UserService {
 
         if(!userCourseList.isEmpty()) {
             userCourseRepository.deleteAll(userCourseList);
+            isDeleteIntegrationNeeded = true;
         }
 
         repository.delete(entity);
+
+        if(isDeleteIntegrationNeeded) {
+            client.deleteUserBy(entity.getId());
+        }
 
     }
 }

@@ -52,6 +52,8 @@ public class UserCourseController {
 
         log.debug("[GET] INIT - findAllBy()");
 
+        service.findById(userId);
+
         final var result = client.findAllBy(userId, pageable);
 
         log.debug("[GET] FINISH - findAllBy()");
