@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,7 @@ public class UserCourseController {
             @PathVariable("userId") final UUID userId,
             @PageableDefault(sort = "id", direction = ASC) final Pageable pageable
     ) {
+
         log.debug("[GET] INIT - findAllBy()");
 
         final var result = client.findAllBy(userId, pageable);
@@ -55,6 +57,7 @@ public class UserCourseController {
         log.debug("[GET] FINISH - findAllBy()");
 
         return ResponseEntity.ok(result);
+
     }
 
     @PostMapping("users/{userId}/courses/subscription")
@@ -72,6 +75,19 @@ public class UserCourseController {
         log.debug("[GET] FINISH - subscribeUserInCourse()");
 
         return ResponseEntity.ok(result);
+
+    }
+
+    @DeleteMapping("users/courses/{courseId}")
+    public ResponseEntity<Void> deleteUserInCourseBy(@PathVariable final UUID courseId) {
+
+        log.debug("[DELETE] INIT - deleteUserInCourseBy()");
+
+        userCourseService.deleteBy(courseId);
+
+        log.debug("[DELETE] FINISH - deleteUserInCourseBy()");
+
+        return ResponseEntity.noContent().build();
 
     }
 }

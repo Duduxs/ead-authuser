@@ -10,4 +10,6 @@ public interface UserCourseService {
     UserCourseDTO saveBy(final UserModel user, final UUID courseId);
 
     void throwIfUserIsAlreadyRegistered(final UserModel userModel, final UUID courseId);
+
+    void deleteBy(final UUID id);
 }

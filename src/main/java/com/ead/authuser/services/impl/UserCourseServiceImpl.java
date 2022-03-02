@@ -2,6 +2,7 @@ package com.ead.authuser.services.impl;
 
 import com.ead.authuser.dtos.UserCourseDTO;
 import com.ead.authuser.exceptions.ConflictHttpException;
+import com.ead.authuser.exceptions.NotFoundHttpException;
 import com.ead.authuser.mappers.UserCourseMapper;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserCourseRepository;
@@ -47,5 +48,16 @@ public class UserCourseServiceImpl implements UserCourseService {
              throw new ConflictHttpException("This user is already registered in course " + courseId);
          }
 
+    }
+
+    @Override
+    @Transactional
+    public void deleteBy(final UUID id) {
+
+        if(!repository.existsByCourseId(id)) {
+            throw new NotFoundHttpException("UserCourse not found");
+        };
+
+        repository.deleteAllByCourseId(id);
     }
 }
