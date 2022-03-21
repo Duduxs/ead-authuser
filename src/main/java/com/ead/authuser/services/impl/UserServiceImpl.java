@@ -8,10 +8,8 @@ import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
 import com.ead.authuser.mappers.UserMapper;
 import com.ead.authuser.models.UserModel;
-import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
-import com.ead.authuser.specifications.SpecificationTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,20 +27,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
 
-    private final UserCourseRepository userCourseRepository;
-
     private final CourseClient client;
 
     private final UserMapper mapper;
 
     public UserServiceImpl(
             final UserRepository repository,
-            final UserCourseRepository userCourseRepository,
             final CourseClient client,
             final UserMapper mapper
     ) {
         this.repository = repository;
-        this.userCourseRepository = userCourseRepository;
         this.client = client;
         this.mapper = mapper;
     }
@@ -57,21 +51,15 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public Page<UserModel> findAll(
             final Pageable pageable,
-            final Specification<UserModel> spec,
-            final UUID courseId
+            final Specification<UserModel> spec
     ) {
 
-        Page<UserModel> users;
-
-        if (courseId != null) {
-            users = repository.findAll(SpecificationTemplate.userCourseId(courseId).and(spec), pageable);
-        } else {
-            users = repository.findAll(spec, pageable);
-        }
+        final Page<UserModel> users = repository.findAll(spec, pageable);
 
         users.forEach(u -> u.add(linkTo(methodOn(UserController.class).findById(u.getId())).withSelfRel()));
 
         return users;
+
     }
 
     @Override
@@ -141,22 +129,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void delete(final UUID userId) {
 
-        boolean isDeleteIntegrationNeeded = false;
-
         final var entity = findById(userId);
 
-        final var userCourseList = userCourseRepository.findAllBy(userId);
-
-        if(!userCourseList.isEmpty()) {
-            userCourseRepository.deleteAll(userCourseList);
-            isDeleteIntegrationNeeded = true;
-        }
-
         repository.delete(entity);
-
-        if(isDeleteIntegrationNeeded) {
-            client.deleteUserBy(entity.getId());
-        }
 
     }
 }

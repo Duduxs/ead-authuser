@@ -54,8 +54,7 @@ public interface UserMapper {
                 ACTIVE,
                 STUDENT,
                 dto.phone(),
-                dto.imgUrl(),
-                Set.of()
+                dto.imgUrl()
         );
     }
 }

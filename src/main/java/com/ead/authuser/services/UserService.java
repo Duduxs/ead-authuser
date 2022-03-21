@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface UserService {
 
-    Page<UserModel> findAll(final Pageable pageable, final Specification<UserModel> spec, final UUID courseId);
+    Page<UserModel> findAll(final Pageable pageable, final Specification<UserModel> spec);
 
     UserModel findById(final UUID id);
 

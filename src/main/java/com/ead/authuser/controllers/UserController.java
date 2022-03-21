@@ -61,13 +61,12 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<UserModel>> findAll(
             @PageableDefault(sort = "createdDate", direction = DESC) final Pageable pageable,
-            final UserSpec spec,
-            @RequestParam(required = false) final UUID courseId
+            final UserSpec spec
     ) {
 
         logger.debug("[GET] INIT - findAll()");
 
-        final var users = service.findAll(pageable, spec, courseId);
+        final var users = service.findAll(pageable, spec);
 
         logger.debug("[GET] FINISH - findAll()");
         logger.info("[GET] FINISH - findAll()");

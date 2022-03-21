@@ -68,32 +68,4 @@ public class CourseClient {
         return new PageImpl<>(courseDTO);
 
     }
-
-    public void deleteUserBy(final UUID id) {
-
-        final String url = utilsService.createUrlDeleteUserInCourseBy(id);
-
-        log.debug("[DELETE] INFO - URL: {}", url);
-        log.info("[DELETE] INFO - URL: {}", url);
-
-        try {
-
-            template.exchange(
-                    url,
-                    DELETE,
-                    null,
-                    Void.class
-            );
-
-        } catch(final HttpStatusCodeException e) {
-
-            log.error("[DELETE] ERROR - Something went wrong: {}", e);
-
-            throw e;
-
-        }
-
-        log.info("[DELETE] FINISH - deleteUserBy() ending request for userId {}", id);
-
-    }
 }
