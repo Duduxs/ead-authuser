@@ -91,7 +91,7 @@ public class UserServiceImplTest {
 
             doReturn(users).when(repository).findAll((Specification<UserModel>) any(), (Pageable) any());
 
-            final var entities = service.findAll(any(), any(), any());
+            final var entities = service.findAll(any(), any());
 
             assertNotNull(entities);
 

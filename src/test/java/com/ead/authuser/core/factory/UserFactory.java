@@ -21,8 +21,7 @@ public class UserFactory {
                 UserStatus.BLOCKED,
                 UserType.STUDENT,
                 "81912348213",
-                "https://www.freeimages.com/image/12901331",
-                Set.of()
+                "https://www.freeimages.com/image/12901331"
         );
     }
 
@@ -36,8 +35,7 @@ public class UserFactory {
                 UserStatus.ACTIVE,
                 UserType.INSTRUCTOR,
                 "81912348333",
-                "https://www.freeimages.com/image/11123313",
-                Set.of()
+                "https://www.freeimages.com/image/11123313"
         );
     }
 
