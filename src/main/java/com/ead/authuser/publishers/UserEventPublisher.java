@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserEventPublisher {
 
-    @Value(value = "${ead.broker.exchange.userEvent}")
-    private final String exchangeName = "";
+    @Value(value = "${ead.broker.exchange.userEvent.name}")
+    private final String exchangeName;
 
     private final RabbitTemplate template;
 
@@ -22,6 +22,7 @@ public class UserEventPublisher {
     @Autowired
     public UserEventPublisher(final RabbitTemplate template) {
         this.template = template;
+        this.exchangeName = null;
     }
 
     public void publishEvent(final UserEventDTO dto) {
