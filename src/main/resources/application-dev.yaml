@@ -19,6 +19,8 @@ spring:
   output:
     ansi:
       enabled: Always
+  rabbitmq:
+    addresses: amqps://yyvtpqtx:w9iD5s6UIvyd7CL5mHka5uuA31dtOIL6@chimpanzee.rmq.cloudamqp.com/yyvtpqtx
 
 logging:
   level:
