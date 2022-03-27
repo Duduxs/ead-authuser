@@ -137,11 +137,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void delete(final UUID userId) {
+    public UserDTO delete(final UUID userId) {
 
         final var entity = findById(userId);
 
         repository.delete(entity);
 
+        return mapper.toDTOWithoutPassword(entity);
     }
 }

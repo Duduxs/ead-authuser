@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.ead.authuser.enums.ActionType.UPDATE;
+
 @Log4j2
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,12 +30,17 @@ public class InstructorController {
     @PatchMapping("/subscription")
     public ResponseEntity<UserDTO> updateUserToInstructor(@RequestBody @Valid final InstructorDTO dto) {
 
-        log.debug("[POST] INIT - updateUserToInstructor() - userID {}", dto.getUserId());
+        log.debug("[PATCH] INIT - updateUserToInstructor() - userID {}", dto.getUserId());
 
         var entityUpdated = service.updateToInstructor(dto);
 
-        log.debug("[POST] FINISH - updateUserToInstructor() - User updated successfully");
-        log.info("[POST] FINISH - updateUserToInstructor() - User updated successfully");
+        log.debug("[PATCH] INFO - updateUserToInstructor() - User updated successfully");
+        log.info("[PATCH] INFO - updateUserToInstructor() - User updated successfully");
+
+        service.publishUserBy(UPDATE, entityUpdated);
+
+        log.debug("[PATCH] FINISH - updateUserToInstructor() - USER PUBLISHED {}", entityUpdated.toString());
+        log.info("[PATCH] FINISH - updateUserToInstructor() - User published successfully userID {}", entityUpdated.id());
 
         return ResponseEntity.ok(entityUpdated);
 

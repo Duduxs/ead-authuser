@@ -24,11 +24,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
+import static com.ead.authuser.enums.ActionType.DELETE;
+import static com.ead.authuser.enums.ActionType.UPDATE;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
@@ -84,8 +85,13 @@ public class UserController {
 
         var entityUpdated = service.update(id, dto);
 
-        logger.debug("[PUT] FINISH - update() - DTO SAVED {}", entityUpdated.toString());
-        logger.info("[PUT] FINISH - update() - User updated successfully userID {}", id);
+        logger.debug("[PUT] INFO - update() - DTO SAVED {}", entityUpdated.toString());
+        logger.info("[PUT] INFO - update() - User updated successfully userID {}", id);
+
+        service.publishUserBy(UPDATE, entityUpdated);
+
+        logger.debug("[PUT] FINISH - update() - USER PUBLISHED {}", entityUpdated.toString());
+        logger.info("[PUT] FINISH - update() - User published successfully userID {}", entityUpdated.id());
 
         return ResponseEntity.ok(entityUpdated);
     }
@@ -112,12 +118,17 @@ public class UserController {
             @RequestBody @Validated(ImagePut.class) @JsonView(ImagePut.class) final UserDTO dto
     ) {
 
-        logger.debug("[PUT] INIT - updateImage() - ID {}, DTO {}", id, dto.toString());
+        logger.debug("[PATCH] INIT - updateImage() - ID {}, DTO {}", id, dto.toString());
 
         var entityUpdated = service.updateImage(id, dto);
 
-        logger.debug("[PUT] FINISH - updateImage() - Entity updated successfully");
-        logger.info("[PUT] FINISH - updateImage() - User updated successfully userID {}", id);
+        logger.debug("[PATCH] INFO - updateImage() - Entity updated successfully");
+        logger.info("[PATCH] INFO - updateImage() - User updated successfully userID {}", id);
+
+        service.publishUserBy(UPDATE, entityUpdated);
+
+        logger.debug("[PATCH] FINISH - updateImage() - USER PUBLISHED {}", entityUpdated.toString());
+        logger.info("[PATCH] FINISH - updateImage() - User published successfully userID {}", entityUpdated.id());
 
         return ResponseEntity.ok(entityUpdated);
     }
@@ -127,10 +138,15 @@ public class UserController {
 
         logger.debug("[DELETE] INIT - delete() - ID {}", id);
 
-        service.delete(id);
+        final var entityDeletedCopy = service.delete(id);
 
-        logger.debug("[DELETE] FINISH - delete() - Entity deleted successfully");
-        logger.info("[DELETE] FINISH - delete() - User deleted successfully userID {}", id);
+        logger.debug("[DELETE] INFO - delete() - Entity deleted successfully");
+        logger.info("[DELETE] INFO - delete() - User deleted successfully userID {}", id);
+
+        service.publishUserBy(DELETE, entityDeletedCopy);
+
+        logger.debug("[DELETE] FINISH - delete() - USER PUBLISHED {}", entityDeletedCopy.toString());
+        logger.info("[DELETE] FINISH - delete() - User published successfully userID {}", entityDeletedCopy.id());
 
         return ResponseEntity.noContent().build();
     }

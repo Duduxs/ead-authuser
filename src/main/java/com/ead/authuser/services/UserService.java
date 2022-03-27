@@ -28,5 +28,5 @@ public interface UserService {
 
     UserDTO updateImage(final UUID id, final UserDTO dto);
 
-    void delete(final UUID userId);
+    UserDTO delete(final UUID userId);
 }
