@@ -1,13 +1,14 @@
 package com.ead.authuser.services.impl;
 
-import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.controllers.UserController;
 import com.ead.authuser.dtos.InstructorDTO;
 import com.ead.authuser.dtos.UserDTO;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
 import com.ead.authuser.mappers.UserMapper;
 import com.ead.authuser.models.UserModel;
+import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import org.springframework.data.domain.Page;
@@ -27,17 +28,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
 
-    private final CourseClient client;
+    private final UserEventPublisher publisher;
 
     private final UserMapper mapper;
 
     public UserServiceImpl(
             final UserRepository repository,
-            final CourseClient client,
+            final UserEventPublisher publisher,
             final UserMapper mapper
     ) {
         this.repository = repository;
-        this.client = client;
+        this.publisher = publisher;
         this.mapper = mapper;
     }
 
@@ -72,6 +73,15 @@ public class UserServiceImpl implements UserService {
 
         return mapper.toDTOWithoutPassword(domain);
 
+    }
+
+    @Override
+    @Transactional
+    public void publishUserBy(final ActionType type, final UserDTO dto) {
+
+        final var userEventDTO = mapper.toUserEventDTO(dto, type);
+
+        publisher.publishEvent(userEventDTO);
     }
 
     @Override

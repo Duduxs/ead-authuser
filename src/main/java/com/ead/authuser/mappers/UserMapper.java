@@ -1,13 +1,13 @@
 package com.ead.authuser.mappers;
 
 import com.ead.authuser.dtos.UserDTO;
+import com.ead.authuser.dtos.UserEventDTO;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.models.UserModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ObjectFactory;
-
-import java.util.Set;
 
 import static com.ead.authuser.enums.UserStatus.ACTIVE;
 import static com.ead.authuser.enums.UserType.STUDENT;
@@ -21,6 +21,8 @@ public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)
     UserDTO toDTOWithoutPassword(final UserModel userModel);
+
+    UserEventDTO toUserEventDTO(final UserDTO dto, final ActionType actionType);
 
     @Mapping(target = "imgUrl", ignore = true)
     @Mapping(target = "password", ignore = true)

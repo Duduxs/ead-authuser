@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 import static com.ead.authuser.dtos.UserDTO.UserView.RegistrationPost;
+import static com.ead.authuser.enums.ActionType.CREATE;
 
 @RestController
 @RequestMapping("auth")
@@ -51,8 +52,13 @@ public class AuthenticationController {
 
         final var insertedEntity = service.save(dto);
 
-        logger.debug("[POST] FINISH - insert() - DTO SAVED {}", insertedEntity.toString());
-        logger.info("[POST] FINISH - insert() - User saved successfully userID {}", insertedEntity.id());
+        logger.debug("[POST] INFO - insert() - DTO SAVED {}", insertedEntity.toString());
+        logger.info("[POST] INFO - insert() - User saved successfully userID {}", insertedEntity.id());
+
+        service.publishUserBy(CREATE, insertedEntity);
+
+        logger.debug("[POST] FINISH - insert() - USER PUBLISHED {}", insertedEntity.toString());
+        logger.info("[POST] FINISH - insert() - User published successfully userID {}", insertedEntity.id());
 
         return ResponseEntity.created(uri).body(insertedEntity);
     }

@@ -2,6 +2,7 @@ package com.ead.authuser.services;
 
 import com.ead.authuser.dtos.InstructorDTO;
 import com.ead.authuser.dtos.UserDTO;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.models.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,8 @@ public interface UserService {
     UserModel findById(final UUID id);
 
     UserDTO save(final UserDTO dto);
+
+    void publishUserBy(final ActionType type, final UserDTO dto);
 
     UserDTO update(final UUID id, final UserDTO dto);
 
