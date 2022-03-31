@@ -3,6 +3,7 @@ package com.ead.authuser.clients;
 import com.ead.authuser.dtos.CourseDTO;
 import com.ead.authuser.dtos.ResponsePageDTO;
 import com.ead.authuser.services.UtilsService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,8 @@ public class CourseClient {
     }
 
     //@Retry(name = "retryInstance", fallbackMethod = "retryFallback")
+    //@CircuitBreaker(name = "circuitbreakerInstance", fallbackMethod = "circuitBreakerFallback")
+    @CircuitBreaker(name = "circuitbreakerInstance")
     public Page<CourseDTO> findAllBy(final UUID userId, final Pageable pageable) {
 
         List<CourseDTO> courseDTO = Collections.emptyList();
@@ -70,10 +73,15 @@ public class CourseClient {
 
     }
 
+    public Page<CourseDTO> circuitBreakerFallback(final UUID userId, final Pageable pageable, final Throwable t) {
+        log.error("circuitBreakerFallback() cause - {}", t.toString());
+        List<CourseDTO> search = new ArrayList<>();
+        return new PageImpl<CourseDTO>(search);
+    }
+
     public Page<CourseDTO> retryFallback(final UUID userId, final Pageable pageable, final Throwable t) {
         log.error("retryFallback() cause - {}", t.toString());
         List<CourseDTO> search = new ArrayList<>();
         return new PageImpl<CourseDTO>(search);
     }
-
 }
