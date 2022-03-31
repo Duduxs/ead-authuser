@@ -3,7 +3,6 @@ package com.ead.authuser.clients;
 import com.ead.authuser.dtos.CourseDTO;
 import com.ead.authuser.dtos.ResponsePageDTO;
 import com.ead.authuser.services.UtilsService;
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
@@ -15,12 +14,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 
 @Log4j2
@@ -59,7 +56,7 @@ public class CourseClient {
 
             courseDTO = result.getBody().getContent();
 
-            log.debug("[GET] INFO - Number of elements {}", courseDTO.size());
+             log.debug("[GET] INFO - Number of elements {}", courseDTO.size());
 
         } catch(final HttpStatusCodeException e) {
 
