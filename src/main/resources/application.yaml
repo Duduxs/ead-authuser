@@ -1,79 +1,9 @@
-server:
-  port: ${PORT:0}
-  servlet:
-    context-path: '/ead-authuser/'
-
-authuser:
-  refreshscope:
-    name: Eduardo José Souza de Oliveira
-
 spring:
   application:
     name: ead-authuser-service
   config:
-    #If config-server is down then I'll load this app.yaml entirely.
-    import: 'optional:configserver:'
+    import: 'configserver:'
   cloud:
     config:
       discovery:
         serviceId: ead-config-server
-  datasource:
-    url: jdbc:postgresql://localhost:5440/authuser
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-      jdbc:
-        lob.non-contextual-creation: true
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-    open-in-view: false
-  output:
-    ansi:
-      enabled: Always
-  rabbitmq:
-    addresses: amqps://yyvtpqtx:w9iD5s6UIvyd7CL5mHka5uuA31dtOIL6@chimpanzee.rmq.cloudamqp.com/yyvtpqtx
-
-logging:
-  level:
-    com.ead.authuser: TRACE
-    root: INFO
-    org.springframework.web: DEBUG
-    org.hibernate: INFO
-
-ead:
-  api:
-    url:
-      course: 'http://ead-course-service/ead-course'
-  broker:
-    exchange:
-      userEvent:
-        name: ead.userevent
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: 'http://localhost:8761/eureka'
-  instance:
-    instanceId: ${spring.application.name}:${random.value}
-    hostname: localhost
-
-resilience4j:
-  circuitbreaker:
-    instances:
-      circuitbreakerInstance:
-        slidingWindowSize: 30
-        permittedNumberOfCallsInHalfOpenState: 2
-        slidingWindowType: TIME_BASED
-        minimumNumberOfCalls: 2
-        waitDurationInOpenState: 30s
-        failureRateThreshold: 80
-  retry:
-    instances:
-      retryInstance:
-        maxRetryAttempts: 3
-        waitDuration: 5s
