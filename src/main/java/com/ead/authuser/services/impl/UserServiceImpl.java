@@ -10,6 +10,7 @@ import com.ead.authuser.mappers.UserMapper;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.UserRepository;
+import com.ead.authuser.services.RoleService;
 import com.ead.authuser.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.ead.authuser.enums.RoleType.ROLE_STUDENT;
 import static com.ead.authuser.enums.UserType.INSTRUCTOR;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -30,16 +32,20 @@ public class UserServiceImpl implements UserService {
 
     private final UserEventPublisher publisher;
 
+    private final RoleService roleService;
+
     private final UserMapper mapper;
 
     public UserServiceImpl(
             final UserRepository repository,
             final UserEventPublisher publisher,
-            final UserMapper mapper
+            final UserMapper mapper,
+            final RoleService roleService
     ) {
         this.repository = repository;
         this.publisher = publisher;
         this.mapper = mapper;
+        this.roleService = roleService;
     }
 
     @Override
@@ -67,7 +73,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDTO save(final UserDTO dto) {
 
-        final var domain = mapper.toDomain(dto);
+        final var role = roleService.findByName(ROLE_STUDENT);
+
+        final var domain = mapper.toDomain(dto, role);
 
         repository.save(domain);
 

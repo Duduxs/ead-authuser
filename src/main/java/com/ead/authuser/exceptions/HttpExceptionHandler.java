@@ -18,6 +18,7 @@ import java.util.Set;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
@@ -40,6 +41,12 @@ public final class HttpExceptionHandler {
     public ResponseEntity<Object> handleConflictHttpException(final Exception e) {
         final var message = new ExceptionJsonMessage(CONFLICT.value(), e.getMessage());
         return new ResponseEntity<>(message, CONFLICT);
+    }
+
+    @ExceptionHandler(InternalServerErrorHttpException.class)
+    public ResponseEntity<Object> handleInternalServerErrorHttpException(final Exception e) {
+        final var message = new ExceptionJsonMessage(INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        return new ResponseEntity<>(message, INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(SQLException.class)

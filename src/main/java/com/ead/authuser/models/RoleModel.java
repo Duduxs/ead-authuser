@@ -26,7 +26,6 @@ import static javax.persistence.GenerationType.AUTO;
 @Table(name = "roles")
 public class RoleModel implements GrantedAuthority, Serializable {
 
-
     @Id
     @GeneratedValue(strategy = AUTO)
     private UUID id;
@@ -40,5 +39,4 @@ public class RoleModel implements GrantedAuthority, Serializable {
     public String getAuthority() {
         return this.name.toString();
     }
-
 }

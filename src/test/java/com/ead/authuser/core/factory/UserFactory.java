@@ -1,15 +1,19 @@
 package com.ead.authuser.core.factory;
 
+import com.ead.authuser.dtos.RoleDTO;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.UserModel;
 
-import java.util.Set;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class UserFactory {
 
-    public UserModel createEmptyUser() { return new UserModel(); }
+    public UserModel createEmptyUser() {
+        return new UserModel();
+    }
 
     public UserModel createUser() {
         return new UserModel(
@@ -21,7 +25,8 @@ public class UserFactory {
                 UserStatus.BLOCKED,
                 UserType.STUDENT,
                 "81912348213",
-                "https://www.freeimages.com/image/12901331"
+                "https://www.freeimages.com/image/12901331",
+                Collections.emptySet()
         );
     }
 
@@ -35,7 +40,8 @@ public class UserFactory {
                 UserStatus.ACTIVE,
                 UserType.INSTRUCTOR,
                 "81912348333",
-                "https://www.freeimages.com/image/11123313"
+                "https://www.freeimages.com/image/11123313",
+                Collections.emptySet()
         );
     }
 
@@ -51,7 +57,8 @@ public class UserFactory {
                 user.getCpf(),
                 user.getImgUrl(),
                 user.getType(),
-                user.getStatus()
+                user.getStatus(),
+                user.getRoles().stream().map(r -> new RoleDTO(r.getId(), r.getName())).collect(Collectors.toSet())
         );
     }
 }

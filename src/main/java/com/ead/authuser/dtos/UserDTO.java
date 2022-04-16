@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -61,7 +62,10 @@ public record UserDTO(
         UserType type,
 
         @JsonView(UserView.UserPut.class)
-        UserStatus status
+        UserStatus status,
+
+        @JsonView(UserView.RegistrationPost.class)
+        Set<RoleDTO> roles
 ) {
     public interface UserView {
         interface RegistrationPost {

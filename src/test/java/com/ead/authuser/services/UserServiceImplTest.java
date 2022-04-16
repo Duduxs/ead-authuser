@@ -1,6 +1,7 @@
 package com.ead.authuser.services;
 
 import com.ead.authuser.core.factory.UserFactory;
+import com.ead.authuser.dtos.RoleDTO;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
@@ -24,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -110,13 +112,13 @@ public class UserServiceImplTest {
             final var user = factory.createEmptyUser();
             final var dto = factory.createDTO(user);
 
-            doReturn(user).when(mapper).toDomain(any());
+            doReturn(user).when(mapper).toDomain(any(), any());
             doReturn(user).when(repository).save(any());
             doReturn(dto).when(mapper).toDTOWithoutPassword(any());
 
             assertNotNull(service.save(dto));
 
-            verify(mapper).toDomain(any());
+            verify(mapper).toDomain(any(), any());
             verify(repository).save(any());
             verify(mapper).toDTOWithoutPassword(any());
         }
@@ -280,7 +282,8 @@ public class UserServiceImplTest {
                 user.getCpf(),
                 user.getImgUrl(),
                 user.getType(),
-                user.getStatus()
+                user.getStatus(),
+                user.getRoles().stream().map(r -> new RoleDTO(r.getId(), r.getName())).collect(Collectors.toSet())
         );
     }
 }
