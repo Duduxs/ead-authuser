@@ -1,5 +1,8 @@
 package com.ead.authuser.controllers;
 
+import com.ead.authuser.configurations.security.JwtProvider;
+import com.ead.authuser.dtos.JwtDTO;
+import com.ead.authuser.dtos.LoginDTO;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -7,6 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 import static com.ead.authuser.dtos.UserDTO.UserView.RegistrationPost;
@@ -29,9 +36,19 @@ public class AuthenticationController {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
+    private final JwtProvider jwtProvider;
+
+    private final AuthenticationManager authenticationManager;
+
     @Autowired
-    public AuthenticationController(final UserService service) {
+    public AuthenticationController(
+            final UserService service,
+            final JwtProvider jwtProvider,
+            final AuthenticationManager authenticationManager
+    ) {
         this.service = service;
+        this.jwtProvider = jwtProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("signup")
@@ -62,4 +79,19 @@ public class AuthenticationController {
 
         return ResponseEntity.created(uri).body(insertedEntity);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<JwtDTO> login(@Valid @RequestBody LoginDTO dto) {
+
+        final var authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(dto.username(), dto.password()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        final String jwt = jwtProvider.generateJwt(authentication);
+
+        return ResponseEntity.ok(new JwtDTO(jwt));
+
+    }
+
 }
