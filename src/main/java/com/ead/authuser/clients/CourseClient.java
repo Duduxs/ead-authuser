@@ -9,6 +9,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -37,11 +39,20 @@ public class CourseClient {
     //@Retry(name = "retryInstance", fallbackMethod = "retryFallback")
     //@CircuitBreaker(name = "circuitbreakerInstance", fallbackMethod = "circuitBreakerFallback")
     @CircuitBreaker(name = "circuitbreakerInstance")
-    public Page<CourseDTO> findAllBy(final UUID userId, final Pageable pageable) {
+    public Page<CourseDTO> findAllBy(
+            final UUID userId,
+            final String token,
+            final Pageable pageable
+    ) {
 
         List<CourseDTO> courseDTO = Collections.emptyList();
 
         final String url = utilsService.createUrlGetAllCoursesByUser(userId, pageable);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
 
         log.debug("[GET] INFO - URL: {}", url);
         log.info("[GET] INFO - URL: {}", url);
@@ -53,7 +64,7 @@ public class CourseClient {
             final ResponseEntity<ResponsePageDTO<CourseDTO>> result = template.exchange(
                     url,
                     GET,
-                    null,
+                    requestEntity,
                     responseType
             );
 

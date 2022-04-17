@@ -8,9 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -35,16 +37,18 @@ public class UserCourseController {
     }
 
     @GetMapping("users/{userId}/courses")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     public ResponseEntity<Page<CourseDTO>> findAllBy(
             @PathVariable("userId") final UUID userId,
-            @PageableDefault(sort = "id", direction = ASC) final Pageable pageable
+            @PageableDefault(sort = "id", direction = ASC) final Pageable pageable,
+            @RequestHeader("Authorization") String token
     ) {
 
         log.debug("[GET] INIT - findAllBy()");
 
         service.findById(userId);
 
-        final var result = client.findAllBy(userId, pageable);
+        final var result = client.findAllBy(userId, token, pageable);
 
         log.debug("[GET] FINISH - findAllBy()");
 
