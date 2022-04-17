@@ -1,5 +1,7 @@
 package com.ead.authuser.controllers;
 
+import com.ead.authuser.configurations.security.AuthenticationCurrentUserService;
+import com.ead.authuser.configurations.security.UserDetailsImpl;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.dtos.UserDTO.UserView.ImagePut;
 import com.ead.authuser.dtos.UserDTO.UserView.PasswordPut;
@@ -15,6 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +36,7 @@ import java.util.UUID;
 import static com.ead.authuser.enums.ActionType.DELETE;
 import static com.ead.authuser.enums.ActionType.UPDATE;
 import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @RestController
 @RequestMapping("users")
@@ -41,15 +47,28 @@ public class UserController {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
+    private final AuthenticationCurrentUserService authenticationService;
+
     @Autowired
-    public UserController(final UserService service) {
+    public UserController(
+            final UserService service,
+            final AuthenticationCurrentUserService authenticationService
+    ) {
         this.service = service;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     public ResponseEntity<UserModel> findById(@PathVariable final UUID id) {
 
         logger.debug("[GET] INIT - findById() - ID {}", id);
+
+        UserDetailsImpl userDetails = authenticationService.getCurrentUser();
+
+        logger.info("[GET] INFO -> Authentication {} - findById()", userDetails.getUsername());
+
+        if (!userDetails.getId().equals(id)) return ResponseEntity.status(FORBIDDEN).build();
 
         final var user = service.findById(id);
 
@@ -60,12 +79,18 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Page<UserModel>> findAll(
             @PageableDefault(sort = "createdDate", direction = DESC) final Pageable pageable,
-            final UserSpec spec
+            final UserSpec spec,
+            final Authentication authentication
     ) {
 
         logger.debug("[GET] INIT - findAll()");
+
+        UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        logger.info("[GET] INFO -> Authentication {} - findAll()", userDetails.getUsername());
 
         final var users = service.findAll(pageable, spec);
 
@@ -96,7 +121,7 @@ public class UserController {
         return ResponseEntity.ok(entityUpdated);
     }
 
-    @PatchMapping( "{id}/password")
+    @PatchMapping("{id}/password")
     public ResponseEntity<Void> updatePassword(
             @PathVariable final UUID id,
             @RequestBody @Validated(PasswordPut.class) @JsonView(PasswordPut.class) final UserDTO dto
@@ -112,7 +137,7 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
-    @PatchMapping( "{id}/image")
+    @PatchMapping("{id}/image")
     public ResponseEntity<UserDTO> updateImage(
             @PathVariable final UUID id,
             @RequestBody @Validated(ImagePut.class) @JsonView(ImagePut.class) final UserDTO dto
