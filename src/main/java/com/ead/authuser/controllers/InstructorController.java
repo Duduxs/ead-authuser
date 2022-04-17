@@ -2,9 +2,11 @@ package com.ead.authuser.controllers;
 
 import com.ead.authuser.dtos.InstructorDTO;
 import com.ead.authuser.dtos.UserDTO;
+import com.ead.authuser.enums.RoleType;
 import com.ead.authuser.services.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +30,7 @@ public class InstructorController {
     }
 
     @PatchMapping("/subscription")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<UserDTO> updateUserToInstructor(@RequestBody @Valid final InstructorDTO dto) {
 
         log.debug("[PATCH] INIT - updateUserToInstructor() - userID {}", dto.getUserId());

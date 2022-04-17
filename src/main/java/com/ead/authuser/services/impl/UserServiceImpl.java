@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.ead.authuser.enums.RoleType.ROLE_INSTRUCTOR;
 import static com.ead.authuser.enums.RoleType.ROLE_STUDENT;
 import static com.ead.authuser.enums.UserType.INSTRUCTOR;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -109,7 +110,11 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateToInstructor(final InstructorDTO dto) {
 
         final var domain = findById(dto.getUserId());
+
+        final var role = roleService.findByName(ROLE_INSTRUCTOR);
+
         domain.setType(INSTRUCTOR);
+        domain.getRoles().add(role);
 
         final var domainUpdated = repository.save(domain);
 
