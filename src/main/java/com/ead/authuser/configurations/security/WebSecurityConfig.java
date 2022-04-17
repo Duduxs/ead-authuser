@@ -9,10 +9,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -32,16 +35,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .httpBasic()
-                .authenticationEntryPoint(authenticationEntryPoint)
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
                 .authorizeRequests()
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers(GET, "/users/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .csrf().disable()
-                .formLogin();
+                .csrf().disable();
+
+        http.addFilterBefore(authenticationJwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -51,12 +55,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public AuthenticationJwtFilter authenticationJwtFilter() {
+        return new AuthenticationJwtFilter();
+    }
+
+    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }
