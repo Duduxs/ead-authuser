@@ -23,7 +23,6 @@ public class AuthenticationJwtFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
