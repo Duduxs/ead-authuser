@@ -112,13 +112,13 @@ public class UserServiceImplTest {
             final var user = factory.createEmptyUser();
             final var dto = factory.createDTO(user);
 
-            doReturn(user).when(mapper).toDomain(any(), any());
+            doReturn(user).when(mapper).toDomain(any(), any(), any());
             doReturn(user).when(repository).save(any());
             doReturn(dto).when(mapper).toDTOWithoutPassword(any());
 
             assertNotNull(service.save(dto));
 
-            verify(mapper).toDomain(any(), any());
+            verify(mapper).toDomain(any(), any(), any());
             verify(repository).save(any());
             verify(mapper).toDTOWithoutPassword(any());
         }

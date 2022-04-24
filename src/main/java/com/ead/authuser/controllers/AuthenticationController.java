@@ -80,6 +80,35 @@ public class AuthenticationController {
         return ResponseEntity.created(uri).body(insertedEntity);
     }
 
+    @PostMapping("signup/admin/usr")
+    public ResponseEntity<UserDTO> insertAdmin(
+            @RequestBody
+            @Validated(RegistrationPost.class)
+            @JsonView(RegistrationPost.class)
+            final UserDTO dto
+    ) {
+
+        logger.debug("[POST] INIT - insertAdmin() - DTO {}", dto.toString());
+
+        final URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(dto.id())
+                .toUri();
+
+        final var insertedEntity = service.saveAdmin(dto);
+
+        logger.debug("[POST] INFO - insertAdmin() - DTO SAVED {}", insertedEntity.toString());
+        logger.info("[POST] INFO - insertAdmin() - User saved successfully userID {}", insertedEntity.id());
+
+        service.publishUserBy(CREATE, insertedEntity);
+
+        logger.debug("[POST] FINISH - insertAdmin() - USER PUBLISHED {}", insertedEntity.toString());
+        logger.info("[POST] FINISH - insertAdmin() - User published successfully userID {}", insertedEntity.id());
+
+        return ResponseEntity.created(uri).body(insertedEntity);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<JwtDTO> login(@Valid @RequestBody LoginDTO dto) {
 

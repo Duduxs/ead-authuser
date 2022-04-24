@@ -18,6 +18,8 @@ public interface UserService {
 
     UserDTO save(final UserDTO dto);
 
+    UserDTO saveAdmin(final UserDTO dto);
+
     void publishUserBy(final ActionType type, final UserDTO dto);
 
     UserDTO update(final UUID id, final UserDTO dto);
