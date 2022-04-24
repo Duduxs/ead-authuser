@@ -4,6 +4,8 @@ import com.ead.authuser.controllers.UserController;
 import com.ead.authuser.dtos.InstructorDTO;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.enums.ActionType;
+import com.ead.authuser.enums.RoleType;
+import com.ead.authuser.enums.UserType;
 import com.ead.authuser.exceptions.BadRequestHttpException;
 import com.ead.authuser.exceptions.NotFoundHttpException;
 import com.ead.authuser.mappers.UserMapper;
@@ -20,9 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.ead.authuser.enums.RoleType.ROLE_ADMIN;
 import static com.ead.authuser.enums.RoleType.ROLE_INSTRUCTOR;
 import static com.ead.authuser.enums.RoleType.ROLE_STUDENT;
+import static com.ead.authuser.enums.UserType.ADMIN;
 import static com.ead.authuser.enums.UserType.INSTRUCTOR;
+import static com.ead.authuser.enums.UserType.STUDENT;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -76,7 +81,21 @@ public class UserServiceImpl implements UserService {
 
         final var role = roleService.findByName(ROLE_STUDENT);
 
-        final var domain = mapper.toDomain(dto, role);
+        final var domain = mapper.toDomain(dto, role, STUDENT);
+
+        repository.save(domain);
+
+        return mapper.toDTOWithoutPassword(domain);
+
+    }
+
+    @Override
+    @Transactional
+    public UserDTO saveAdmin(final UserDTO dto) {
+
+        final var role = roleService.findByName(ROLE_ADMIN);
+
+        final var domain = mapper.toDomain(dto, role, ADMIN);
 
         repository.save(domain);
 

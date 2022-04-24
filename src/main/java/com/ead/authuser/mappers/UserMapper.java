@@ -4,6 +4,7 @@ import com.ead.authuser.annotations.EncodedMapping;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.dtos.UserEventDTO;
 import com.ead.authuser.enums.ActionType;
+import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.RoleModel;
 import com.ead.authuser.models.UserModel;
 import org.mapstruct.Mapper;
@@ -14,7 +15,6 @@ import org.mapstruct.ObjectFactory;
 import java.util.Set;
 
 import static com.ead.authuser.enums.UserStatus.ACTIVE;
-import static com.ead.authuser.enums.UserType.STUDENT;
 
 @Mapper(componentModel = "spring", uses = PasswordEncoderMapper.class)
 public interface UserMapper {
@@ -23,7 +23,7 @@ public interface UserMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "password", qualifiedBy = EncodedMapping.class)
     @Mapping(target = "roles", ignore = true)
-    UserModel toDomain(final UserDTO userDTO, final RoleModel role);
+    UserModel toDomain(final UserDTO userDTO, final RoleModel role, final UserType type);
 
     @Mapping(target = "password", ignore = true)
     UserDTO toDTOWithoutPassword(final UserModel userModel);
@@ -51,7 +51,7 @@ public interface UserMapper {
     UserModel updateImage(@MappingTarget final UserModel userModel, final UserDTO dto);
 
     @ObjectFactory
-    default UserModel create(final UserDTO dto, final RoleModel role) {
+    default UserModel create(final UserDTO dto, final RoleModel role, final UserType type) {
         return new UserModel(
                 dto.username(),
                 dto.email(),
@@ -59,7 +59,7 @@ public interface UserMapper {
                 dto.password(),
                 dto.fullName(),
                 ACTIVE,
-                STUDENT,
+                type,
                 dto.phone(),
                 dto.imgUrl(),
                 Set.of(role)
