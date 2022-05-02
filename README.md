@@ -72,7 +72,7 @@ $ git clone https://github.com/Duduxs/ead-config-server-repo
 
 ```
 
-To run the authuser:
+To run authuser:
 
 ```bash
 # Execute the main class AuthuserApplication with dev profile (Be sure to have already service registry and config server up) 
