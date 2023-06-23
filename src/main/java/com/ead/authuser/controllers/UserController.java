@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyRole('STUDENT')")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<UserModel> findById(@PathVariable final UUID id) {
 
         logger.debug("[GET] INIT - findById() - ID {}", id);

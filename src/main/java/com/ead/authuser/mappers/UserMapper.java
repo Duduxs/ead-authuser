@@ -30,6 +30,8 @@ public interface UserMapper {
 
     UserEventDTO toUserEventDTO(final UserDTO dto, final ActionType actionType);
 
+    UserEventDTO toUserEventDTO(final UserModel domain, final ActionType actionType);
+
     @Mapping(target = "imgUrl", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "type", ignore = true)

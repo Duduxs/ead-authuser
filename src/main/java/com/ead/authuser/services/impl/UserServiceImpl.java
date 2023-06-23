@@ -28,6 +28,7 @@ import static com.ead.authuser.enums.RoleType.ROLE_STUDENT;
 import static com.ead.authuser.enums.UserType.ADMIN;
 import static com.ead.authuser.enums.UserType.INSTRUCTOR;
 import static com.ead.authuser.enums.UserType.STUDENT;
+import static com.ead.authuser.enums.UserType.USER;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -79,9 +80,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDTO save(final UserDTO dto) {
 
-        final var role = roleService.findByName(ROLE_STUDENT);
+        final var role = roleService.findByName(RoleType.ROLE_USER);
 
-        final var domain = mapper.toDomain(dto, role, STUDENT);
+        final var domain = mapper.toDomain(dto, role, USER);
 
         repository.save(domain);
 
